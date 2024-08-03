@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatopedia</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js" integrity="sha384-OIQvzrXlCcZjpDN0F57F8f1PdjYdJ89PQE6D1AkOfY1qD7uqeN5sug6s2eetKqE2" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Chatopedia</h1>
+        <div id="chat-box"></div>
+        <div class="input-container">
+            <input type="text" id="message-input" placeholder="Type your message here..." autocomplete="off">
+            <button id="send-button" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <script>
+        const socket = io();
+
+        socket.on('message', function(msg) {
+            const chatBox = document.getElementById('chat-box');
+            const message = document.createElement('div');
+            message.className = 'message';
+            message.textContent = msg;
+            chatBox.appendChild(message);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
+        function sendMessage() {
+            const input = document.getElementById('message-input');
+            const message = input.value;
+            if (message) {
+                socket.send(message);
+                input.value = '';
+            }
+        }
+
+        document.getElementById('message-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
+
